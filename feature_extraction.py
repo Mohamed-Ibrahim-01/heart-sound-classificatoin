@@ -87,4 +87,5 @@ def construct_dataframe():
     "MFCC2","MFCC3","MFCC4","MFCC5",
     "MFCC6","MFCC7","MFCC8","MFCC9","MFCC10"
     ,"MFCC11","MFCC12","MFCC13","Label"])
+    dataframe.to_csv("data.csv")
     return dataframe
