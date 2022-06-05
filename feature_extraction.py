@@ -5,6 +5,7 @@ import librosa
 import pandas as pd
 import utils
 import segmentation
+
 def get_max_amplitude(signal):
     return max(list(signal))
 
@@ -38,7 +39,6 @@ def stat_features(array):
 
 def mfcc(array,sampling_rate=4000):
     mfccs = librosa.feature.mfcc(array, sr=sampling_rate,n_mfcc=13)
-    # print(mfccs.shape)
     mfccs = np.mean(mfccs,axis=1)
     return list(mfccs.flatten())
 mfccs =mfcc(np.array([0.1,0.52,0.132,0.5,0.888]))
@@ -81,6 +81,7 @@ def construct_dataframe():
     records ,df= utils.load_pascal()
     segments = segmentation.build_segements(records)
     features_matrix = build_features_df(segments)
+    
     dataframe = pd.DataFrame(features_matrix,columns=["Max_Amplitude" , "Dominant_Freq" , "Entropy", "Mean" ,"Median" ,"STD", "Kurtosis" 
     ,"Skewness" ,"IQR", "First_Percentile", 
     "Second_Percentile", "Third_Percentile","MFCC1",

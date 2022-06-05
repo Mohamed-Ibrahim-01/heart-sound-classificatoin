@@ -29,7 +29,6 @@ PascalInfo["ZIP_PATH"] = f"{BASE_DIR}{os.sep}{PascalInfo['ZIP_NAME']}"
 
 def _load_dataset_dir(dataset_info):
     name, zip_path = dataset_info['NAME'], dataset_info["ZIP_PATH"]
-    print("---", dataset_info["ZIP_PATH"], "---")
     dataset_dir = f"{Dirs['DATASETS']}{os.sep}{name}"
     if(os.path.exists(dataset_dir)):
         shutil.rmtree(dataset_dir)
