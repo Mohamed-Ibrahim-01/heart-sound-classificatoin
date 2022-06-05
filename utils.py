@@ -8,7 +8,9 @@ import re
 import pandas as pd
 from pathlib import Path
 from scipy.io import wavfile
-
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
 BASE_DIR = os.getcwd()
 
 Dirs = {
@@ -68,6 +70,7 @@ def _load_pascal_df(pascal_dir):
 def add_sound(curr_row, sounds):
     _, path, label = tuple(curr_row)
     _, sound = wavfile.read(path)
+    sound = sound.astype(np.float32)
     sounds.append([sound, label])
     return curr_row
 
@@ -84,3 +87,18 @@ def load_pascal():
 
     return pascal_array, pascal_df
 
+def plot_hs(path, dur=1.5, verts=[], sr=4000):
+    y, sr = librosa.load(path, sr=sr, duration=dur)
+    fig, ax = plt.subplots(nrows=1, figsize=(20,4))
+    for line in verts:
+        ax.axvline(x=line, color="red", ls='--')
+    librosa.display.waveshow(y, sr=sr, ax=ax)
+    ax.set(title=f'{path.split("/")[-1]}')
+    plt.show()
+    return (y, sr)
+
+def normalize(signal):
+    base = min(signal)
+    range = max(signal) - base
+    normalized = [(x-base)/range for x in signal]
+    return np.array(normalized)
