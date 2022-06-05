@@ -5,6 +5,7 @@ import librosa
 import pandas as pd
 import utils
 import segmentation
+
 def get_max_amplitude(signal):
     return max(list(signal))
 
@@ -37,15 +38,12 @@ def stat_features(array):
     return mean,median,std,kurtosis,skewness,iqr,first_percentile,second_percentile,third_percentile
 
 def mfcc(array,sampling_rate=4000):
-    mfccs = librosa.feature.mfcc(array, sr=sampling_rate,n_mfcc=13)
-    # print(mfccs.shape)
+    mfccs = librosa.feature.mfcc(y=array, sr=sampling_rate,n_mfcc=13)
     mfccs = np.mean(mfccs,axis=1)
     return list(mfccs.flatten())
-mfccs =mfcc(np.array([0.1,0.52,0.132,0.5,0.888]))
-print(mfccs)
+
 # function to build the whole data frame of features with labels  
 # params 2d array of segments with labels 
-
 def build_features_df(segments):
     data , labels = separate_labels(segments=segments)
     # print(labels)
@@ -81,10 +79,9 @@ def construct_dataframe():
     records ,df= utils.load_pascal()
     segments = segmentation.build_segements(records)
     features_matrix = build_features_df(segments)
-    dataframe = pd.DataFrame(features_matrix,columns=["Max_Amplitude" , "Dominant_Freq" , "Entropy", "Mean" ,"Median" ,"STD", "Kurtosis" 
-    ,"Skewness" ,"IQR", "First_Percentile", 
-    "Second_Percentile", "Third_Percentile","MFCC1",
-    "MFCC2","MFCC3","MFCC4","MFCC5",
-    "MFCC6","MFCC7","MFCC8","MFCC9","MFCC10"
-    ,"MFCC11","MFCC12","MFCC13","Label"])
+    dataframe = pd.DataFrame(features_matrix, columns=[
+        "Max_Amplitude", "Dominant_Freq", "Entropy", "Mean", "Median", "STD", "Kurtosis","Skewness",
+        "IQR", "First_Percentile", "Second_Percentile", "Third_Percentile","MFCC1", "MFCC2","MFCC3",
+        "MFCC4","MFCC5", "MFCC6","MFCC7","MFCC8","MFCC9","MFCC10" ,"MFCC11","MFCC12","MFCC13","Label"
+    ])
     return dataframe
