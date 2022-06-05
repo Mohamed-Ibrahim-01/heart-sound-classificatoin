@@ -1,0 +1,31 @@
+// Load dataset as csv
+// load into memory
+// Explore :-
+    // - Plot a sample of each class
+    // - Satats (mean of all class diagram)
+    // - Count of each class
+    // - Lengths of files
+
+    // - Features plots
+
+// Presproccessing
+
+- Denoising (wavlets)
+- Normalization
+
+- Linear Segmentation * ( Cycle Shift)
+    // Get n(3-5) cycles from each reacord each cycle is 0.8 ** (class imbalance)
+
+- Features
+    // Generate dataframe of Features (labled)
+
+-Modeling 
+    // Cross validation
+    // SVM
+    // Gradient boosting classifier (GBC)
+    // Random Forest
+
+- Metrices of validation
+    - F1 Score
+    - Confusion matrix
+    
