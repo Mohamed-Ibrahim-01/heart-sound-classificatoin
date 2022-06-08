@@ -11,6 +11,7 @@ from scipy.io import wavfile
 import librosa
 import librosa.display
 import matplotlib.pyplot as plt
+import pywt
 BASE_DIR = os.getcwd()
 
 Dirs = {
@@ -86,9 +87,9 @@ def load_pascal():
 
     return pascal_array, pascal_df
 
-def plot_hs(path, dur=1.5, verts=[], sr=4000):
-    y, sr = librosa.load(path, sr=sr, duration=dur)
-    fig, ax = plt.subplots(nrows=1, figsize=(20,4))
+def plot_hs(path, x=[], dur=1.5, verts=[], sr=4000):
+    y, sr = librosa.load(path, sr=sr, duration=dur) if len(x) == 0 else (x, sr)
+    _, ax = plt.subplots(nrows=1, figsize=(20,4))
     for line in verts:
         ax.axvline(x=line, color="red", ls='--')
     librosa.display.waveshow(y, sr=sr, ax=ax)
@@ -96,8 +97,8 @@ def plot_hs(path, dur=1.5, verts=[], sr=4000):
     plt.show()
     return (y, sr)
 
-def normalize(signal):
-    base = min(signal)
+def normalize(signal, mode="min-max"):
+    base = min(signal) if mode == "min-max" else 0
     range = max(signal) - base
     normalized = [(x-base)/range for x in signal]
     return np.array(normalized)
@@ -126,3 +127,8 @@ def load_physioNet():
     datafraame = build_physio_dataframe()
     sounds  = _load_pascal_array(datafraame)
     return sounds
+
+def db6_wavelet_denoise(x):
+    a5, d5, d4, d3, d2, d1 = pywt.wavedec(x, 'db6', level=5)
+    reconstructed = pywt.waverec([a5, d5, np.zeros_like(d4), d3, d2, np.zeros_like(d1)], 'db6')
+    return reconstructed
