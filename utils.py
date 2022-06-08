@@ -101,3 +101,28 @@ def normalize(signal):
     range = max(signal) - base
     normalized = [(x-base)/range for x in signal]
     return np.array(normalized)
+
+
+def load_physio_dataset(dataset_char,label):
+    with open(f'training-{dataset_char}\RECORDS-{label}') as f:
+        lines = f.readlines()
+    records = []
+    for index in range(len(lines)) :
+        lines[index] = lines[index].strip()
+        # print(lines[index])
+        records.append([lines[index],f'training-{dataset_char}{os.sep}{lines[index]}.wav',label])
+    return records 
+
+
+def build_physio_dataframe():
+    datasets = ['a','b','c','d','e','f']
+    records = []
+    for char in datasets:
+        records.extend(load_physio_dataset(char,'normal'))
+        records.extend(load_physio_dataset(char,'abnormal'))
+    return  pd.DataFrame(records,columns=["name", "path", "label"])
+
+def load_physioNet():
+    datafraame = build_physio_dataframe()
+    sounds  = _load_pascal_array(datafraame)
+    return sounds

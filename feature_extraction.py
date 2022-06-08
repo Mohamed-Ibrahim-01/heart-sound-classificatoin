@@ -77,8 +77,11 @@ def extract_segment_features(segment):
     return features
 
 
-def construct_dataframe():
-    records ,df= utils.load_pascal()
+def construct_dataframe(dataset_name):
+    if dataset_name == "pascal":
+        records ,df= utils.load_pascal()
+    else:
+        records = utils.load_physioNet()
     segments = segmentation.build_segements(records)
     features_matrix = build_features_df(segments)
     
@@ -88,5 +91,5 @@ def construct_dataframe():
     "MFCC2","MFCC3","MFCC4","MFCC5",
     "MFCC6","MFCC7","MFCC8","MFCC9","MFCC10"
     ,"MFCC11","MFCC12","MFCC13","Label"])
-    dataframe.to_csv("data.csv")
+    dataframe.to_csv(f"{dataset_name}.csv")
     return dataframe
