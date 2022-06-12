@@ -16,10 +16,10 @@ def segment_sound(record,label, n_cycles=5, samplerate=4000):
     return segs_arr
 
 
-def build_segements(data_arr):
+def build_segements(data_arr, sr=4000):
     segments = []
     for record in data_arr:
-        segments.extend(segment_sound(record[0], record[1]))
+        segments.extend(segment_sound(record[0], record[1], samplerate=sr))
     return segments
 
 
