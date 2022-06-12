@@ -74,16 +74,16 @@ def add_sound(curr_row, sounds):
     sounds.append([sound, label])
     return curr_row
 
-def _load_pascal_array(pascal_df):
+def _load_dataset_array(dataset_df):
     sounds = []
-    pascal_df.apply(lambda row : add_sound(row, sounds), axis=1, raw=True)
+    dataset_df.apply(lambda row : add_sound(row, sounds), axis=1, raw=True)
     return np.array(sounds, dtype=object)
 
 # return sounds np 2D array (with labels) [[array1, label][array2, label]]
 def load_pascal():
     pascal_dir = _load_dataset_dir(PascalInfo)
     pascal_df = _load_pascal_df(pascal_dir)
-    pascal_array = _load_pascal_array(pascal_df)
+    pascal_array = _load_dataset_array(pascal_df)
 
     return pascal_array, pascal_df
 
@@ -97,6 +97,7 @@ def plot_hs(path, x=[], dur=1.5, verts=[], sr=4000):
     plt.show()
     return (y, sr)
 
+
 def normalize(signal, mode="min-max"):
     base = min(signal) if mode == "min-max" else 0
     range = max(signal) - base
@@ -105,7 +106,7 @@ def normalize(signal, mode="min-max"):
 
 
 def load_physio_dataset(dataset_char,label):
-    with open(f'training-{dataset_char}\RECORDS-{label}') as f:
+    with open(f'training-{dataset_char}{os.sep}RECORDS-{label}') as f:
         lines = f.readlines()
     records = []
     for index in range(len(lines)) :
@@ -123,12 +124,15 @@ def build_physio_dataframe():
         records.extend(load_physio_dataset(char,'abnormal'))
     return  pd.DataFrame(records,columns=["name", "path", "label"])
 
+
 def load_physioNet():
-    datafraame = build_physio_dataframe()
-    sounds  = _load_pascal_array(datafraame)
+    dataframe = build_physio_dataframe()
+    sounds  = _load_dataset_array(dataframe)
     return sounds
+
 
 def db6_wavelet_denoise(x):
     a5, d5, d4, d3, d2, d1 = pywt.wavedec(x, 'db6', level=5)
     reconstructed = pywt.waverec([a5, d5, np.zeros_like(d4), d3, d2, np.zeros_like(d1)], 'db6')
     return reconstructed
+

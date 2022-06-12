@@ -38,7 +38,7 @@ def stat_features(array):
     return mean,median,std,kurtosis,skewness,iqr,first_percentile,second_percentile,third_percentile
 
 def mfcc(array,sampling_rate=4000):
-    mfccs = librosa.feature.mfcc(array, sr=sampling_rate,n_mfcc=13)
+    mfccs = librosa.feature.mfcc(y=array, sr=sampling_rate,n_mfcc=13)
     mfccs = np.mean(mfccs,axis=1)
     return list(mfccs.flatten())
 mfccs =mfcc(np.array([0.1,0.52,0.132,0.5,0.888]))
@@ -78,11 +78,13 @@ def extract_segment_features(segment):
 
 
 def construct_dataframe(dataset_name):
+    segments = []
     if dataset_name == "pascal":
         records ,df= utils.load_pascal()
+        segments = segmentation.build_segements(records, sr=4000)
     else:
         records = utils.load_physioNet()
-    segments = segmentation.build_segements(records)
+        segments = segmentation.build_segements(records, sr=2000)
     features_matrix = build_features_df(segments)
     
     dataframe = pd.DataFrame(features_matrix,columns=["Max_Amplitude" , "Dominant_Freq" , "Entropy", "Mean" ,"Median" ,"STD", "Kurtosis" 
