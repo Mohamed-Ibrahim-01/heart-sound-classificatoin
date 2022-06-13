@@ -5,6 +5,7 @@ import zipfile
 import shutil
 import glob
 import re
+import math
 import pandas as pd
 from pathlib import Path
 from scipy.io import wavfile
@@ -136,3 +137,13 @@ def db6_wavelet_denoise(x):
     reconstructed = pywt.waverec([a5, d5, np.zeros_like(d4), d3, d2, np.zeros_like(d1)], 'db6')
     return reconstructed
 
+def features_histo(dfs):
+    features_names = dfs[0].columns
+    fig, axs = plt.subplots(nrows=9, ncols=3, figsize=(20,30),
+                            gridspec_kw={'hspace': 0.3})
+    for df in dfs:
+        for i, feature in enumerate(features_names):
+            ax = axs[math.floor(i/3)][i%3]
+            ax.hist(df[feature], bins=20)
+            ax.set(title=feature)
+    plt.show()
