@@ -147,3 +147,14 @@ def features_histo(dfs):
             ax.hist(df[feature], bins=20)
             ax.set(title=feature)
     plt.show()
+
+
+def load_heartsound_features():
+    hs_df = pd.read_csv("physioNet.csv")
+    hs_df = hs_df.drop(columns=["Unnamed: 0"])
+    hs_df = hs_df.sort_values(by='Label', ascending=False)
+    hs_df = hs_df.tail(hs_df.shape[0]-4000)
+
+    normal_df = hs_df[hs_df["Label"] == "normal"]
+    abnormal_df = hs_df[hs_df["Label"] == "abnormal"]
+    return hs_df, normal_df, abnormal_df

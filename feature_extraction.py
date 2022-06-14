@@ -41,8 +41,7 @@ def mfcc(array,sampling_rate=4000):
     mfccs = librosa.feature.mfcc(y=array, sr=sampling_rate,n_mfcc=13)
     mfccs = np.mean(mfccs,axis=1)
     return list(mfccs.flatten())
-mfccs =mfcc(np.array([0.1,0.52,0.132,0.5,0.888]))
-print(mfccs)
+
 # function to build the whole data frame of features with labels  
 # params 2d array of segments with labels 
 
