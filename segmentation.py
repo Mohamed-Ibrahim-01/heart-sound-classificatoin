@@ -1,9 +1,35 @@
 import math
 import librosa.util
 import numpy as np
+from utils import db6_wavelet_denoise, normalize
 
 
-def segment_sound(record,label, n_cycles=5, samplerate=4000):
+def segment_sound(record, label, n_cycles=5, samplerate=4000):
+    """
+    function to segment each record from the dataset to segments 
+    by dividing the record into segments each of n_heartCycles
+
+    Parameters
+    ----------
+
+    record: array
+    array of record signal values
+
+    label: string
+    the label of the class of the record 
+    from which the segment is extracted
+
+    n_cycles: int
+    the n_heartCycles which the segment contains
+
+    samplerate: int
+    the sampling rate of the input the record
+
+    Returns
+    -------
+    seg_arr: array of signal values in each segment
+
+    """
     segement_duration = n_cycles*0.8
     record_duration = len(record)/samplerate #the dataset is sampled at 4K
     segments_num = math.floor(record_duration/segement_duration)
@@ -14,15 +40,36 @@ def segment_sound(record,label, n_cycles=5, samplerate=4000):
         single_seg = record[i*segment_pts : segment_pts*(i+1)]
         segs_arr.append([single_seg,label])
     return segs_arr
+    
 
 
 def build_segements(data_arr, sr=4000):
+    """
+    function to build dataframe from the segments of the records
+
+    Parameters
+    ----------
+    data_arr: numpy array 
+    the dataframe of the records converted to numpy array
+
+    sr: int
+    the sampling rate of the data
+
+    Returns
+    -------
+    segments: array
+    list of all segments in all records in data_arr
+
+    """
     segments = []
     for record in data_arr:
         segments.extend(segment_sound(record[0], record[1], samplerate=sr))
     return segments
 
 
+#other techniques for segmentation
+#the trials for segmenting the heart sound using shannon energy peaks and automatic heart segmentation
+ 
 def frame_hs(x, sr, frame_time, overlap_time):
     if(frame_time < overlap_time):
         raise ValueError("overlap cannot be larger than frame")
@@ -66,12 +113,11 @@ def threshold_se(se, percent=60):
 def s1_peaks_se(se, s1_dist, merging_dist):
     pass
 
-"""
 def murmur_elimination(input_signal):
-    denoised_signal = denoising(input_signal)
-    normalized_signal = normalization(denoised_signal)
+    denoised_signal = db6_wavelet_denoise(input_signal)
+    normalized_signal = normalize(denoised_signal)
     envelope = automatic_low_pass_filter(normalized_signal)
-    normalized_envelope = normalization(envelope)
+    normalized_envelope = normalize(envelope)
     cut_off_frequency = get_cut_off_frequency(normalized_envelope)
     for i in range(len(normalized_envelope)):
         if(normalized_envelope[i] < cut_off_frequency):
@@ -80,8 +126,8 @@ def murmur_elimination(input_signal):
 def get_cut_off_frequency(Normalized_envelope): #get the cut off freq required to filter murmur (threshold in freq domain below which the elimination occur)
     valley_pts_indices = get_valley_pts_indices(Normalized_envelope)
     for i in range(len(valley_pts_indices)):
-        if (Normalized_envelope[i] < 0.2): # i + j -> complex then 0.2?
-            threshold = Normalized_envelope[i] # i + j ?
+        if (Normalized_envelope[i] < 0.2): 
+            threshold = Normalized_envelope[i]  
         else:
             threshold = 200
     return threshold #the cut off freq for filtering
@@ -102,7 +148,7 @@ def fft_evelope(sound_fft, lf=5):
 
 from scipy.fft import fft
 def automatic_low_pass_filter(normalized_signal):
-    ffth = fft(normalized_signal)z
+    ffth = fft(normalized_signal)
     efft = fft_evelope(ffth)
     get_valley_pts_indices(efft)
-"""
+
