@@ -30,6 +30,20 @@ PascalInfo = {
 PascalInfo["ZIP_PATH"] = f"{BASE_DIR}{os.sep}{PascalInfo['ZIP_NAME']}"
 
 def _load_dataset_dir(dataset_info):
+    """
+    extracts data files into dataset directory
+
+    Parameters
+    ---------------
+    dataset_info: dictionary
+    dictionary including the dataset's metadata
+
+    Returns
+    ---------------
+    dataset_dir: string
+    dataset directory path
+    
+    """
     name, zip_path = dataset_info['NAME'], dataset_info["ZIP_PATH"]
     dataset_dir = f"{Dirs['DATASETS']}{os.sep}{name}"
     if(os.path.exists(dataset_dir)):
@@ -40,12 +54,27 @@ def _load_dataset_dir(dataset_info):
     return dataset_dir
 
 def _folder_label(folder_path):
+    """
+    gets the label of the signals in a folder
+
+    Parameters
+    ---------------
+    folder_path: string
+    path of the directory containing the dataset's signals
+
+    Returns
+    ---------------
+    label: string
+    label of signals in a folder
+    
+    """
     label = re.findall(r"murmur|normal|extrastole", folder_path.lower())
     if len(label) == 0:
         return "other"
     return label[0] if label[0] != "extrastole" else "extrasystole"
 
 def _pascal_folders(pascal_dir):
+    
     zip_files = glob.glob(f'{pascal_dir}{os.sep}*.zip')
     for zip_path in zip_files:
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
@@ -127,6 +156,13 @@ def build_physio_dataframe():
 
 
 def load_physioNet():
+    """
+    builds physioNet dataframe with features and labels
+    Returns
+    -------------
+    sounds: 2D array of floats
+    2D array containing the sound files numeric data
+    """
     dataframe = build_physio_dataframe()
     sounds  = _load_dataset_array(dataframe)
     return sounds
@@ -138,6 +174,15 @@ def db6_wavelet_denoise(x):
     return reconstructed
 
 def features_histo(dfs):
+    """
+    draws histograms of features
+
+    Parameters
+    -------------
+    dfs: array of dataframes
+    array containing all the dataframes to plot
+
+    """
     features_names = dfs[0].columns
     fig, axs = plt.subplots(nrows=9, ncols=3, figsize=(20,30),
                             gridspec_kw={'hspace': 0.3})
@@ -150,6 +195,22 @@ def features_histo(dfs):
 
 
 def load_heartsound_features():
+    """
+    takes the physioNet dataset and outputs the balanced classes dataset, the normal patients' dataset,
+    and the abnormal patients' dataset. This is done for easier usage and analysis of the data
+
+    Returns
+    -----------
+    hs_df: pandas dataframe
+    dataframe with the balanced classes
+
+    normal_df: pandas dataframe
+    dataframe of normal patients' records
+
+    abnormal_df: pandas dataframe
+    dataframe of abnormal patients' records
+
+    """
     hs_df = pd.read_csv("physioNet.csv")
     hs_df = hs_df.drop(columns=["Unnamed: 0"])
     hs_df = hs_df.sort_values(by='Label', ascending=False)
