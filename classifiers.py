@@ -23,7 +23,7 @@ classifiers = [
             'n_estimators':[10,20,30,40,50,60,70,80,90,100,110,120, 300, 400, 600],
             'max_features':[1,2,3]
         },
-        'cached': RandomForestClassifier(max_depth=6, n_estimators=50),
+        'cached': RandomForestClassifier(max_depth=6, n_estimators=800),
         'method':RandomForestClassifier
     },
     {
@@ -33,7 +33,7 @@ classifiers = [
             'n_estimators':[10,20,30,40,50,60,70,80,90,100,110,120, 300, 400, 600],
             'max_features':[1,2,3]
         },
-        'cached': XGBClassifier(max_depth=6, n_estimators=50),
+        'cached': XGBClassifier(max_depth=6, n_estimators=9),
         'method':XGBClassifier
     },
 

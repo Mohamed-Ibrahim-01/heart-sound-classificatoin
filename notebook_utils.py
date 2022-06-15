@@ -177,25 +177,23 @@ def display_dfs(dfs, gap=20, justify='center'):
 
 
 def confusion_compare(fitted_clfs, data):
-    classifiers = [clf[1] for clf in fitted_clfs]
     inputs, targets = data
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10,8))
 
-    for cls, ax in zip(classifiers, axes.flatten()):
-        ConfusionMatrixDisplay.from_estimator(cls, inputs, targets, ax=ax, colorbar=False)
-        ax.title.set_text(cls.__class__.__name__)
+    for cls, ax in zip(fitted_clfs, axes.flatten()):
+        ConfusionMatrixDisplay.from_estimator(cls[1], inputs, targets, ax=ax, colorbar=False)
+        ax.title.set_text(cls[0])
     plt.tight_layout()  
     plt.show()
 
 
 def roc_compare(fitted_clfs, data):
-    classifiers = [clf[1] for clf in fitted_clfs]
     inputs, targets = data
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15,6))
 
-    for cls, ax in zip(classifiers, axes.flatten()):
-        RocCurveDisplay.from_estimator(cls, inputs, targets, ax=ax)
-        ax.title.set_text(cls.__class__.__name__)
+    for cls, ax in zip(fitted_clfs, axes.flatten()):
+        RocCurveDisplay.from_estimator(cls[1], inputs, targets, ax=ax)
+        ax.title.set_text(cls[0])
     plt.tight_layout()  
     plt.show()
 
