@@ -18,6 +18,27 @@ abnormal_physio = physio_arr[physio_arr[:,1] == 'abnormal']
 hs_df, normal_df, abnormal_df = load_heartsound_features()
 
 def _get_random_samples(n_samples, seed):
+    """
+    function to pick random samples from the dataset
+
+    Parameters
+    ----------
+
+    n_sample: int
+        the no of samples to be picked randomly
+
+    seed: int
+        the seed value passed to fn np.random.seed to keep 
+        the same value of seed constant so at each time the 
+        cell is run the output random records are the same
+
+    Returns
+    -------
+
+    sample_sounds: array
+        array of random sample records
+
+    """
     if(n_samples > 10 or seed > 500):
         raise ValueError("Max samples is 10 and is even, seed max is 500")
 
@@ -30,6 +51,11 @@ def _get_random_samples(n_samples, seed):
     return sample_sounds
 
 def view_downsampled_dist():
+    """
+    function for data distriburion visualization 
+    plots a pie chart showing the contribution of each class of the segments extracted from the dataset
+
+    """
     _, axs = plt.subplots(nrows=1, ncols=3, figsize=(20,4))
     normal_cnt, abnormal_cnt = tuple(hs_df["Label"].value_counts(normalize=True))
     axs[1].pie([normal_cnt,abnormal_cnt], labels=["Normal", "Abnormal"], autopct='%.0f%%', textprops={'fontsize':15})
@@ -38,6 +64,20 @@ def view_downsampled_dist():
     plt.show()
 
 def view_random_samples(n_samples=2, seed=0):
+    """
+    function to play the random samples of the records from the dataset
+
+    Parameters
+    ----------
+    n_samples: int
+        no of random samples
+
+    seed: int
+        the seed value passed to fn np.random.seed to keep 
+        the same value of seed constant so at each time the 
+        cell is run the output random records are the same
+
+    """
     sample_sounds = _get_random_samples(n_samples, seed)
     for sound in sample_sounds:
         sample_sound, title = sound
@@ -53,6 +93,11 @@ def view_random_samples(n_samples=2, seed=0):
 
 
 def view_files_dist():
+    """
+    function for data distriburion visualization 
+    plots a pie chart showing the contribution of each class in the records of in the dataset
+
+    """
     _, ax = plt.subplots(nrows=1, ncols=1, figsize=(6,4))
     classes = pd.DataFrame(physio_arr[:,1])
     normal_cnt, abnormal_cnt = classes.value_counts(normalize=True)
@@ -64,6 +109,10 @@ def view_files_dist():
     plt.show()
 
 def view_seconds_dist():
+    """
+    function to visualize th distribution of the total duration of each class in seconds
+    pie chart plot the total duration contribution of each class 
+    """
     _, axs = plt.subplots(ncols=2, figsize=(20,4))
     abnormal_seconds = [len(sound)/2000 for sound in abnormal_physio[:, 0]]
     normal_seconds = [len(sound)/2000 for sound in normal_physio[:, 0]]
@@ -86,6 +135,9 @@ def view_seconds_dist():
     plt.show()
 
 def view_wavlet_denoising():
+    """
+    function to plot a random abnormal heart sound sample & the same sample after denoising 
+    """
     abnormal_sound = _get_random_samples(1, 0)[1][0]
     sample_sounds = [abnormal_sound, db6_wavelet_denoise(abnormal_sound)]
     labels = ["Abormal", "Abnormal Denoised"]
@@ -100,6 +152,23 @@ def view_wavlet_denoising():
         plt.show()
 
 def compare(classifiers, X, y, grid_search=[]):
+    """
+    function to compare the classifiers models with respect to each other
+
+    parameters
+    ----------
+    classifiers: list
+        list of the classifiers to be used on the data
+    
+    X: array
+        the inputs of the dataset
+    
+    y: array
+        the labels of the dataset
+    
+    grid_search: list
+
+    """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0,shuffle=True)
     data = ((X_train, y_train), (X_test, y_test))
     train, test = data
@@ -124,6 +193,14 @@ def compare(classifiers, X, y, grid_search=[]):
 
 
 def fit_data(clf, data, grid_search):
+    """
+    Helper function for compare function
+
+    Parameters
+    ----------
+    clf: string
+        name of the classifier to be used on the data 
+    """
     inputs, targets = data
     classifier = clf['cached']
     if grid_search:
@@ -135,6 +212,9 @@ def fit_data(clf, data, grid_search):
 
 
 def clf_report(clf, data):
+    """
+    helper function for classification_report function
+    """
     clf_name, classifier = clf
     inputs, lables = data
     predictions = classifier.predict(inputs)
@@ -143,6 +223,9 @@ def clf_report(clf, data):
 
 
 def log_reports(reports):
+    """
+    helper function for classification_report function
+    """
     for report in reports:
         (clf_name, train_report),(_,test_report) = report
         display_html(f'<h3>{clf_name}</h3>', raw=True)
@@ -152,7 +235,8 @@ def log_reports(reports):
         display_dfs(dfs)
 
 def display_dfs(dfs, gap=20, justify='center'):
-    """Displaying dataframe horizontally to be visually good
+    """
+    Displaying dataframe horizontally to be visually good
 
     Parameters
     ----------
@@ -177,6 +261,16 @@ def display_dfs(dfs, gap=20, justify='center'):
 
 
 def confusion_compare(fitted_clfs, data):
+    """
+    function to compare the confusion matrices resulted from each model
+
+    Parmeters
+    ---------
+    fitted_clf: list
+        names of the chosen classifier
+
+    data: array of the dataset
+    """
     classifiers = [clf[1] for clf in fitted_clfs]
     inputs, targets = data
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10,8))
@@ -189,6 +283,9 @@ def confusion_compare(fitted_clfs, data):
 
 
 def roc_compare(fitted_clfs, data):
+    """
+    function to compare the roc curves for the classifiers fitted
+    """
     classifiers = [clf[1] for clf in fitted_clfs]
     inputs, targets = data
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15,6))
