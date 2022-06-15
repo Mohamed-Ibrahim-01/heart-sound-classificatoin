@@ -10,8 +10,8 @@ classifiers = [
     {
         'name':'SVM',
         'parameters':{
-            'kernel':['linear', 'poly', 'rbf', 'sigmoid'],
-            'C':np.logspace(start = 0, stop = 60, num = 100, base = 2 , dtype = 'float64')
+            'kernel':['linear','poly','rbf'],
+            'C':np.arange(30,60,5)    
         },
         'cached': SVC(kernel ='rbf', C=50),
         'method':SVC

@@ -99,7 +99,7 @@ def view_wavlet_denoising():
         axs[0].set_title(title)
         plt.show()
 
-def compare(classifiers, X, y, grid_search=False):
+def compare(classifiers, X, y, grid_search=[]):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0,shuffle=True)
     data = ((X_train, y_train), (X_test, y_test))
     train, test = data
@@ -127,7 +127,9 @@ def fit_data(clf, data, grid_search):
     inputs, targets = data
     classifier = clf['cached']
     if grid_search:
-        classifier = GridSearchCV(clf['method'](), clf['parameters'], cv=5, scoring ="f1_macro")
+        if clf['name'] in set(grid_search):
+            print(f"classirier name {clf['name']}")
+            classifier = GridSearchCV(clf['method'](), clf['parameters'], cv=5, scoring ="f1_macro")
     classifier.fit(inputs, targets);
     return (clf['name'], classifier)
 
