@@ -6,7 +6,7 @@
   algorithms as a data preprocessing step before training
   different models to choose the best classifier based on
   some evaluation criteria.
- ## Installaion
+ ## Installation
 - You may need to install these libraries to run the notebook  
 ```sh
 pip install sklearn
