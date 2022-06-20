@@ -8,7 +8,7 @@
   some evaluation criteria.
  ## Installation
 - You may need to install these libraries to run the notebook  
-```sh
+```python
 pip install sklearn
 pip install librosa
 pip install scipy
