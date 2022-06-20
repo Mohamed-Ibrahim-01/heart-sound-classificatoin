@@ -246,6 +246,7 @@ def fit_data(clf, data, grid_search):
 def clf_report(clf, data):
     """
     Helper function for classification_report function
+    
     """
     clf_name, classifier = clf
     inputs, lables = data
@@ -280,7 +281,7 @@ def display_dfs(dfs, gap=20, justify='center'):
     gap : int
         The horizontal gap sapce between 2 dataframes
     """
-    
+
     html = ""
     for title, df in dfs.items():
         df_html = df.head(n=11)._repr_html_()
