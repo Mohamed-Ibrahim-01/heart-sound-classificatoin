@@ -119,6 +119,7 @@ def view_seconds_dist():
     """
     function to visualize th distribution of the total duration of each class in seconds
     pie chart plot the total duration contribution of each class 
+
     """
     _, axs = plt.subplots(ncols=2, figsize=(20, 4))
     abnormal_seconds = [len(sound)/2000 for sound in abnormal_physio[:, 0]]
@@ -143,6 +144,7 @@ def view_seconds_dist():
 def view_wavlet_denoising():
     """
     function to plot a random abnormal heart sound sample & the same sample after denoising 
+
     """
     abnormal_sound = _get_random_samples(1, 0)[1][0]
     sample_sounds = [abnormal_sound, db6_wavelet_denoise(abnormal_sound)]
@@ -175,7 +177,15 @@ def compare(classifiers, X, y, grid_search=[]):
         the labels of the dataset
 
     grid_search: list
+        a list of the classifiers names to be applied a grid search on them
 
+    Returns
+    -------
+    fitted_clfs: list
+        the classifiers to be fitted on the data
+    
+    best_params: list of list
+        the parameters of each classifier
     """
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.25, random_state=0, shuffle=True)
@@ -203,12 +213,24 @@ def compare(classifiers, X, y, grid_search=[]):
 
 def fit_data(clf, data, grid_search):
     """
-    Helper function for compare function
+    function to fit the data to a classifier and
 
     Parameters
     ----------
     clf: string
         name of the classifier to be used on the data 
+    
+    data: array
+        the dataset as numpy array
+    
+    grid_search: list
+        a list of the classifiers names to be applied a grid search on them
+
+    Returns
+    ------
+    (clf['name'], classifier): tuple 
+        tuple of the classifier name & fitted model
+
     """
     inputs, targets = data
     classifier = clf['cached']
@@ -223,7 +245,7 @@ def fit_data(clf, data, grid_search):
 
 def clf_report(clf, data):
     """
-    helper function for classification_report function
+    Helper function for classification_report function
     """
     clf_name, classifier = clf
     inputs, lables = data
@@ -234,7 +256,8 @@ def clf_report(clf, data):
 
 def log_reports(reports):
     """
-    helper function for classification_report function
+    Helper function for classification_report function
+
     """
     for report in reports:
         (clf_name, train_report), (_, test_report) = report
@@ -257,7 +280,7 @@ def display_dfs(dfs, gap=20, justify='center'):
     gap : int
         The horizontal gap sapce between 2 dataframes
     """
-
+    
     html = ""
     for title, df in dfs.items():
         df_html = df.head(n=11)._repr_html_()
@@ -280,9 +303,10 @@ def confusion_compare(fitted_clfs, data):
     fitted_clf: list
         names of the chosen classifier
 
-    data: array of the dataset
+    data: array 
+        the dataset as numpy array
     """
-
+    inputs, targets = data
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 8))
 
     for cls, ax in zip(fitted_clfs, axes.flatten()):
@@ -294,6 +318,17 @@ def confusion_compare(fitted_clfs, data):
 
 
 def roc_compare(fitted_clfs, data):
+    """
+    function to compare the confusion matrices resulted from each model
+
+    Parmeters
+    ---------
+    fitted_clf: list
+        names of the chosen classifier
+
+    data: array 
+        the dataset as numpy array
+    """
     inputs, targets = data
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 6))
 
